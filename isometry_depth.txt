@@ -1,0 +1,22 @@
+/// Update Sprite Size
+
+/*********************************************************
+ An experiment drawing sprites isometrically such that
+ objects closer to the from seem larger and those farther
+ seem smaller. 
+ Inspired by the "Don't Starve" style of isometery.
+**********************************************************/
+
+upper = (y - view_yview[0]);
+image_xscale = 1 + (upper/(8*view_vborder[0]));
+image_yscale = 1 + (upper/(8*view_vborder[0]));
+
+depth = y*(-100);
+
+
+
+
+
+        
+
+  

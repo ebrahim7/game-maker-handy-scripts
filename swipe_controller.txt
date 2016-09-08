@@ -1,0 +1,93 @@
+/// Calculate Swipe Physics
+/*********************************************************
+ Registers the user's swipe jesture and sets movement 
+ parameters accordingly. If the user does not swipe but
+ instead slowly moves the device's mouse input across the
+ screen, the objects will move smoothly and slowly. 
+ Designed to replicate touch swipe features in most touch
+ device apps and to move the objects fluidly and naturally.
+**********************************************************/
+
+if (obj_control_mm.selected_token == instance_nearest(x, y, obj_rooms_token)) {
+
+    // init movement bounds
+    hit_rightend = (obj_rooms_token.room_tiles[| ds_list_size(obj_rooms_token.room_tiles)-1].x <= room_width/2);
+    hit_leftend = (obj_rooms_token.room_tiles[| 0].x >= room_width/2);
+    
+    if (spd != 0) {
+        if (spd > 0) {
+            spd = max(0, spd - frict);
+        } else {
+            spd = min(0, spd + frict);
+        }
+    }
+    
+    if (clicked) {
+        time++;
+    }
+    
+    mx = mouse_x;
+    my = mouse_y;
+    
+    var click = mouse_check_button_pressed(mb_left);
+    var clickhold = mouse_check_button(mb_left);
+    var release = mouse_check_button_released(mb_left);
+    var me = point_in_rectangle(mouse_x, mouse_y, 0, 420, 1920, 810); 
+    
+    if (click and me) {
+        clicked = true;
+        mxs = mx;
+        mys = my;
+        spd = 0;
+    }
+    
+    dist = point_distance(mxs, mys, mx, my);
+    dir = point_direction(mxs, mys, mx, my);
+    
+    dist_hold = point_distance(prev_mx, prev_my, mx, my);
+    dir_hold = point_direction(prev_mx, prev_my, mx, my);
+    
+    if (release and clicked) {
+        clicked = false;
+        if (time < 10) {
+            spd = dist/time;
+            if (mxs > mx) {
+                spd *= -1;
+            }
+                        
+        } else {
+            spd = 0;
+        }
+        time = 0;
+    }
+    
+    var rightmost = obj_rooms_token.room_tiles[| ds_list_size(obj_rooms_token.room_tiles)-1];
+    var leftmost = obj_rooms_token.room_tiles[| 0];
+    
+    if (clicked and clickhold) {
+        if (prev_mx != mx) {
+            var lendir = lengthdir_x(other.dist_hold, other.dir_hold);
+            if (!(rightmost.x + lendir <= room_width/2) and !(leftmost.x + lendir >= room_width/2)) {
+                with (obj_room_tile) {
+                    var lendir = lengthdir_x(other.dist_hold, other.dir_hold);
+                    if (!(other.hit_leftend and (lendir > 0)) and !(other.hit_rightend and (lendir < 0))) {
+                        x += lendir;
+                    } 
+                }
+            }
+        }
+        
+    }
+    
+    
+    if (rightmost.x + spd <= room_width/2) {
+        spd = -1*abs(point_distance(rightmost.x, 0, room_width/2, 0));
+    }
+    
+    if (leftmost.x + spd >= room_width/2) {
+        spd = abs(point_distance(room_width/2, 0, leftmost.x, 0));
+    }
+    
+    prev_mx = mx;
+    prev_my = my;
+}

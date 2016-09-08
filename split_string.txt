@@ -1,0 +1,27 @@
+/// split(string, substring)
+/*********************************************************
+ Split any string by any character.
+**********************************************************/
+
+var str = argument[0];
+var substr = argument[1];
+var split_index = string_pos(substr, str);
+var rest = str;
+var ret = ds_list_create();
+
+while ((rest != "") && (split_index != 0)) {
+    ds_list_add(ret, string_copy(rest, 1, split_index - 1));
+    rest = to_end(rest, split_index+1);
+    split_index = string_pos(substr, rest);
+}
+
+if (rest != "") {
+    ds_list_add(ret, rest);
+}
+
+return ret;
+    
+
+
+
+

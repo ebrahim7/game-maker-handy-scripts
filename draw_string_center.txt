@@ -1,0 +1,43 @@
+/// scr_draw_string_center(string, x_offset, y_offset)
+/*********************************************************
+ Takes in a string and prints it inside of an object at 
+ the center of its sprite with respect to the x_offset
+ and y_offset parameters. If the string is too long to fit
+ given the font (which is set outside of this function) 
+ then the function will print a portion of the string with
+ ellipses at the end.
+**********************************************************/
+
+var str = argument[0];
+var xoff = argument[1];
+var yoff = argument[2];
+
+var slack = 0.75;
+
+// make sure string fits in sprite
+var changed = false;
+while (string_width(str) > sprite_width*slack) {
+    if (!changed) { changed = true; }
+    str = string_copy(str, 1, string_length(str) - 1);
+}
+
+// if changed string add '...'
+if (changed) {
+    var tmp = str + "...";
+    var one_char = false;
+    while (string_width(tmp) > sprite_width*slack) {
+        if (string_length(str) < 2) { 
+            one_char = true;
+            break; 
+        }
+        str = string_copy(str, 1, string_length(str) - 1);
+        tmp = str + "...";
+    }
+    if (!one_char) {
+        str = tmp;
+    }
+}
+
+draw_text(x - (string_width(str)/2) + xoff, y - (string_height(name)/2) + yoff, str);
+
+

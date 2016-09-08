@@ -1,0 +1,20 @@
+/// segment_by(segment, list_string)
+/*********************************************************
+ Creates a string separted by a given segment string given
+ a list of strings.
+**********************************************************/
+
+var seg = argument[0];
+var list = argument[1];
+var tmp = "";
+
+for (var i = 0; i < ds_list_size(list)-1; i++) {
+    tmp += list[| i];
+    tmp += seg;
+}
+
+return tmp + list[| ds_list_size(list) -1];
+
+       
+
+

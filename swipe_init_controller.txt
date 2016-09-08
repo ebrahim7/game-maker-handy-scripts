@@ -1,0 +1,23 @@
+/// Init Swipe Controller
+/*********************************************************
+ Sets up the parameters necessary for the swipe physics
+ to move naturally and the variables used to store mouse
+ input information.
+**********************************************************/
+
+frict = 0.5;
+spd = 0;
+time = 0;
+mx = 0;
+my = 0;
+mxs = 0;
+mys = 0;
+clicked = false;
+dist = 0;
+dir = 0;
+dist_hold = 0;
+dir_hold = 0;
+prev_mx = 0;
+prev_my = 0;
+hit_leftend = false;
+hit_rightend = false;

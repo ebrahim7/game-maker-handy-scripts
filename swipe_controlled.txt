@@ -1,0 +1,6 @@
+/// Update Position
+/*********************************************************
+ Moves the object to where the swipe object calculates it
+ must go after the user swipes in a given region on screen.
+**********************************************************/
+x += obj_swipe_room_tile.spd;

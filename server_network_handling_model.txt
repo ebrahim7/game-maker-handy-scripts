@@ -1,0 +1,62 @@
+/// Parsing Network Data
+/*********************************************************
+ A template for reading and buffer data sent between
+ server and client.
+ Inspired by tutorials by HeartBeast.
+ Find more at https://www.youtube.com/user/uheartbeast
+**********************************************************/
+
+var n_id = ds_map_find_value(async_load, "id");         
+if (n_id == server) {                               
+    var n_type = ds_map_find_value(async_load, "type");
+    var sock = ds_map_find_value(async_load, "socket");
+    switch (n_type) {
+        
+        case (network_type_connect):       
+            with (obj_token) {
+                switch (object_get_name(object_index)) {
+                    case "obj_creature_token":
+                        send_create_creature(id, x, y, color, sock)
+                        break;
+                    case "obj_object_token":
+                        send_create_object(id, x, y, color, sock);
+                        break;
+                }
+                
+                send_new_name(id, name, sock);
+                send_new_hp(id, HP, sock);
+                send_new_ac(id, AC, sock);
+                send_new_size(id, size, sock);
+                
+            }
+            send_move_view(view_xview[0], view_yview[0], sock);
+            send_zoom_view(view_wview[0], view_hview[0], sock);
+            
+            ds_list_add(socket_list, sock);
+            break;
+            
+        case (network_type_disconnect):                    
+            var pos = ds_list_find_index(socket_list, sock);
+            ds_list_delete(socket_list, pos);
+            break;
+            
+        case (network_type_data):                    
+            var buffer = ds_map_find_value(async_load, "buffer"); 
+            var action = buffer_read(buffer, buffer_u16 );
+            
+            switch (action) {
+                
+                case NEW_UNAME:
+                    
+                    var unm = buffer_read(buffer, buffer_string);
+                    var sock = buffer_read(buffer, buffer_u16);
+                    
+                    ds_map_add(unames, unm, sock);
+                    
+                    break;
+            
+            }
+                    
+            break;
+    }
+}

@@ -1,0 +1,26 @@
+/// Set up server end
+/*********************************************************
+ Sets up the server end of a network socket interface.
+ Inspired by tutorials by HeartBeast.
+ Find more at https://www.youtube.com/user/uheartbeast
+**********************************************************/
+
+// object fields
+server = noone;
+socket_list = ds_list_create();
+
+// set up usernames
+unames = ds_map_create();
+ds_map_add(unames, obj_control.uname, -1);
+
+// create server
+if (os_is_network_connected()) {
+    server = network_create_server(network_socket_tcp, 6543, 6);
+    if (server < 0) {
+        show_message_async("Unable to create server.");
+    } else {
+        //show_message_async("Server created succesfully.");
+    }
+} else {
+    show_message_async("Unable to find network connections. Please connect to internet to use this feature.");
+}

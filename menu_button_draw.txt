@@ -1,0 +1,12 @@
+/// Draw Button Name
+/*********************************************************
+ Draws the name of the button onto the button sprite.
+ (not used often since most buttons in my games have 
+ unique requirements and parameters)
+**********************************************************/
+
+draw_set_color(c_black);
+draw_set_font(fnt_test);
+scr_draw_string_center(name, (sprite_width/2), (sprite_height/2));
+draw_self();
+

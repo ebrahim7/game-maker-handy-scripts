@@ -1,0 +1,29 @@
+/// Get HTTP result
+/*********************************************************
+ Template for handling received http request data.
+ Inspired by tutorials by HeartBeast.
+ Find more at https://www.youtube.com/user/uheartbeast
+**********************************************************/
+
+var result = async_load[? "result"];
+var rets = split_result(result);
+var call = ds_list_find_value(rets, 0);
+var val = ds_list_find_value(rets, 1);
+
+
+if (call == "export_grid") {
+    place_update(val);
+} else if (call == "user_stat") {
+    var val_stat = split(val, "-");
+    var call_stat = val_stat[| 0];
+    var stat = val_stat[| 1];
+    if (call_stat == "moves") {
+        obj_user.umoves = real(stat);
+    } else if (call_stat == "score") {
+        obj_user.uscore = real(stat);
+    }
+} 
+
+
+
+

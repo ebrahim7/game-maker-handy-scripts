@@ -1,0 +1,93 @@
+/// Control Movement
+/*********************************************************
+ Basic platformer movement. Controlled by arrow keys on 
+ keyboard.
+ Inspired by tutorials by HeartBeast.
+ Find more at https://www.youtube.com/user/uheartbeast
+**********************************************************/
+
+// get key input
+var lkey = keyboard_check(vk_left);
+var rkey = keyboard_check(vk_right);
+var jkey = keyboard_check_pressed(vk_up);
+var dkey = keyboard_check(vk_down);
+        
+// left move 
+if (lkey){
+    hspd = -spd;
+    momentum = min(4, momentum + 0.1)
+}
+
+// right move
+if (rkey) {
+    hspd = spd; 
+    momentum = min(4, momentum + 0.5)
+}
+
+// short circuit movement
+if (rkey == lkey) {
+    hspd = 0;
+}
+
+// horizonal collision
+if (place_meeting(x+hspd, y, obj_solid)) {
+    while(!place_meeting(x+sign(hspd), y, obj_solid)) {
+        x += sign(hspd);
+    }
+    hspd = 0
+    momentum = 0
+}
+
+
+// execute motion
+x+= hspd
+
+
+
+// air movement and jump
+if (place_meeting(x, y+1, obj_solid)) {
+    if (jkey) {
+        vspd = -jspd;
+    }
+    momentum = 0
+} else {
+    if (jkey) {
+        if (jumpNum > 0) {
+            vspd = -jspd - momentum;
+            //jumpNum -= 1;
+        }
+    }
+    if (dkey) {
+        vspd = min(vspd + 5, 20)
+    } else { 
+        vspd = min(vspd + grav, 10);
+    }
+    
+   
+    
+    if (keyboard_check_released(vk_up) && vspd < -(jspd+momentum)/2) {
+        vspd = -(jspd+momentum)/2;
+    }
+}
+
+if (!rkey && !lkey && !dkey && !jkey) {
+    momentum = max(momentum - 1, 0)
+}
+
+// vertical collision
+if (place_meeting(x, y+vspd, obj_solid)) {
+    while(!place_meeting(x, y+sign(vspd), obj_solid)) {
+        y += sign(vspd);
+    }
+    vspd = 0
+    momentum = 0
+    jumpNum = numJumps;
+}
+
+
+
+// execute motion
+y+= vspd
+
+
+

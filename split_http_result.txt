@@ -1,0 +1,26 @@
+/// split_result(result)
+/*********************************************************
+ Separates words or characters separated by dashes and 
+ returns a list of all the individual strings separated.
+ Used in a very specific case in which the backend could
+ only return dash-separated strings and not json.
+ Can be modified to split any string by any character.
+**********************************************************/
+
+var result = argument[0];
+var dash_index = string_pos("-", result); // scalable by replacing "-" by any other char
+var call = "";
+var val = "";
+
+for (var i = 1; i < dash_index; i++) {
+    call += string(string_char_at(result, i));
+}
+for (var i = dash_index+1; i < string_length(result)+1; i++) {
+    val += string(string_char_at(result, i));
+}
+
+var ret = ds_list_create();
+ds_list_add(ret, call);
+ds_list_add(ret, val);
+return ret;
+

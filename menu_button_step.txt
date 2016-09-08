@@ -1,0 +1,29 @@
+/// Interactions with mouse and screen
+/*********************************************************
+ Deals with the interactions between the mouse and the 
+ button. Also allows for relative positioning if the menu
+ is mobile.
+ (not used often since most buttons in my games have 
+ unique requirements and parameters)
+**********************************************************/
+
+// update position
+// (obj_menu_still is the parent menu object) 
+x = obj_menu_still.x;
+y = obj_menu_still.y + index*sprite_height;
+
+// control mouse interactions
+var click = mouse_check_button_pressed(mb_left);
+var me = point_in_rectangle(mouse_x, mouse_y, x, y, x + sprite_width, y + sprite_height);
+var press = mouse_check_button_pressed(mb_any);
+if (!obj_control.tool_used) {
+    if (click and me) {
+        script_execute(click_script);
+    }
+    
+    if (me) {
+        image_index = 1;
+    } else {
+        image_index = 0;
+    }
+}

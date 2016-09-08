@@ -1,0 +1,172 @@
+/// Parsing Network Data
+/*********************************************************
+ A template for reading and buffer data sent between
+ server and client.
+ Inspired by tutorials by HeartBeast.
+ Find more at https://www.youtube.com/user/uheartbeast
+**********************************************************/
+
+var n_id = ds_map_find_value(async_load, "id");         
+if (n_id == client) {                               
+    var n_type = ds_map_find_value(async_load, "type");
+    if (n_type == network_type_data) {                   
+            var buffer = ds_map_find_value(async_load, "buffer"); 
+            var action = buffer_read(buffer, buffer_u16);
+            
+            switch (action) {
+            
+                case CREATE_CREATURE:
+                
+                    var obj_id = buffer_read(buffer, buffer_u16);
+                    var xx = buffer_read(buffer, buffer_s16);
+                    var yy = buffer_read(buffer, buffer_s16);
+                    var hue = buffer_read(buffer, buffer_u8);
+                    var sat = buffer_read(buffer, buffer_u8);
+                    var val = buffer_read(buffer, buffer_u8);
+                    
+                    var obj = instance_create(xx, yy, obj_creature_token);
+                    obj.color = make_colour_hsv(hue, sat, val);
+                    
+                    ds_map_add(token_ids, obj_id, obj);
+                    
+                    break;
+                    
+                case CREATE_OBJECT:
+                        
+                    var obj_id = buffer_read(buffer, buffer_u16);
+                    var xx = buffer_read(buffer, buffer_s16);
+                    var yy = buffer_read(buffer, buffer_s16);
+                    var hue = buffer_read(buffer, buffer_u8);
+                    var sat = buffer_read(buffer, buffer_u8);
+                    var val = buffer_read(buffer, buffer_u8);
+                    
+                    var obj = instance_create(xx, yy, obj_object_token);
+                    obj.color = make_colour_hsv(hue, sat, val);
+                    
+                    ds_map_add(token_ids, obj_id, obj);
+                    
+                    break;
+                        
+                case DELETE_TOKEN:
+                        
+                    var obj_id = buffer_read(buffer, buffer_u16);
+                    
+                    var obj = ds_map_find_value(token_ids, obj_id);
+                    with (obj) { instance_destroy(); }
+                    
+                    ds_map_delete(token_ids, obj_id);
+                    
+                    break;
+                    
+                case MOVE_TOKEN:
+                        
+                    var obj_id = buffer_read(buffer, buffer_u16);
+                    var xx = buffer_read(buffer, buffer_s16);
+                    var yy = buffer_read(buffer, buffer_s16);
+                    
+                    var obj = ds_map_find_value(token_ids, obj_id);
+                    obj.x = xx;
+                    obj.y = yy;
+                    
+                    break;
+                    
+                case SET_HP:
+                        
+                    var obj_id = buffer_read(buffer, buffer_u16);
+                    var nhp = buffer_read(buffer, buffer_s16);
+                        
+                    var obj = ds_map_find_value(token_ids, obj_id);
+                    obj.HP = nhp;
+                    
+                    break;
+                        
+                case SET_AC:
+                    
+                    var obj_id = buffer_read(buffer, buffer_u16);
+                    var nac = buffer_read(buffer, buffer_s16);
+                        
+                    var obj = ds_map_find_value(token_ids, obj_id);
+                    obj.AC = nac;
+                    
+                    break;
+                                             
+                case SET_SIZE:
+                        
+                    var obj_id = buffer_read(buffer, buffer_u16);
+                    var size = buffer_read(buffer, buffer_string);
+                        
+                    var obj = ds_map_find_value(token_ids, obj_id);
+                    obj.size = size;
+                    obj.sprite_adjusted = false;
+                    
+                    break;
+                                        
+                case SET_COLOR:
+                   
+                    var obj_id = buffer_read(buffer, buffer_u16);
+                    var hue = buffer_read(buffer, buffer_u8);
+                    var sat = buffer_read(buffer, buffer_u8);
+                    var val = buffer_read(buffer, buffer_u8);
+                    
+                    var obj = ds_map_find_value(token_ids, obj_id);
+                    obj.color = make_colour_hsv(hue, sat, val);
+                    
+                    break;
+                                          
+                case MOVE_VIEW:
+                    
+                    var xx = buffer_read(buffer, buffer_s16);
+                    var yy = buffer_read(buffer, buffer_s16);
+                    
+                    view_xview[0] = xx;
+                    view_yview[0] = yy;
+                    
+                    break;
+                        
+                case SET_NAME:
+                    
+                    var obj_id = buffer_read(buffer, buffer_u16);
+                    var nm = buffer_read(buffer, buffer_string);
+                    
+                    var obj = ds_map_find_value(token_ids, obj_id);
+                    obj.name = nm;
+                    
+                    break;
+                    
+                case ZOOM_VIEW:
+                    
+                    var xscale = buffer_read(buffer, buffer_s16);
+                    var yscale = buffer_read(buffer, buffer_s16);
+                    
+                    view_wview[0] = xscale;
+                    view_hview[0] = yscale;
+                    
+                    break;
+                    
+                case REQUEST_UNAME:
+                    
+                    // set up information to send
+                    var t_buffer = buffer_create(256, buffer_grow, 1);
+                    buffer_seek(t_buffer, buffer_seek_start, 0);
+                    buffer_write(t_buffer , buffer_u16, NEW_UNAME);
+                    buffer_write(t_buffer , buffer_string, obj_control.uname);
+                    
+                    // send information to all connected devices
+                    network_send_packet(client, t_buffer, buffer_tell(t_buffer));
+                    buffer_delete(t_buffer);
+                
+                    break;
+                    
+                case NEW_UNAME:
+                    
+                    var unm = buffer_read(buffer, buffer_string);
+                    var sock = buffer_read(buffer, buffer_u16);
+                    
+                    ds_map_add(unames, unm, sock);
+                    
+                    break;
+                    
+            }
+                    
+    }
+}

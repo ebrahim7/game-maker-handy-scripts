@@ -1,0 +1,27 @@
+/// Set Up Client
+/*********************************************************
+ Sets up the client end of a network socket interface.
+ Inspired by tutorials by HeartBeast.
+ Find more at https://www.youtube.com/user/uheartbeast
+**********************************************************/
+
+// object fields
+client = noone;
+token_ids = ds_map_create();
+
+// set up users in room
+unames = ds_map_create();
+ds_map_add(unames, obj_control.uname, -1);
+
+// create server
+if (os_is_network_connected()) {
+    client = network_create_socket(network_socket_tcp);
+    var server = network_connect(client , "192.168.1.28", 6543);
+    if (server < 0) {
+        show_message_async("Unable to connect to server.");
+    } else {
+        show_message_async("Connected succesfully.");
+    }
+} else {
+    show_message_async("Unable to find network connections. Please connect to internet to use this feature.");
+}

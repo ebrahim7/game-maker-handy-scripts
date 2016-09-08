@@ -1,0 +1,19 @@
+/// Init Menu Button
+/*********************************************************
+ Sets up the parameters for a button that is part of a 
+ menu system.
+ (not used often since most buttons in my games have 
+ unique requirements and parameters)
+**********************************************************/
+
+image_speed = 0;
+image_index = 0;
+click_script = scr_blank;
+name = "menubutton";
+parent = noone;
+index = 0;
+depth = FRONT - 1;
+
+// helper variable that stores the id of the pop up messages
+msg = noone;
+

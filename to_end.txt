@@ -1,0 +1,23 @@
+/// to_end(string, index);
+var str = argument[0];
+var index = argument[1];
+
+if (str == "") {
+    return "";
+}
+
+if (index == 0) {
+    return str;
+}
+
+if (index > string_length(str)) {
+    return "";
+}
+
+var str_new = "";
+for (var i = index; i < string_length(str)+1; i++) {
+    str_new += string_char_at(str, i);
+}
+
+return str_new;
+

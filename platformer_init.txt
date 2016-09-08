@@ -1,0 +1,18 @@
+/// Initialization
+/*********************************************************
+ Sets up parameters for basic platformer movement. 
+ Often these parameters are tweaked or extended to best
+ fit the intended look and feel of the game.
+ Inspired by tutorials by HeartBeast.
+ Find more at https://www.youtube.com/user/uheartbeast
+**********************************************************/
+
+grav = 1;
+spd = 6;
+jspd = 10;
+hspd = 0;
+vspd = 0;
+momentum = 0
+numJumps = 4;  // number of airjumps - 1
+jumpNum = numJumps;
+

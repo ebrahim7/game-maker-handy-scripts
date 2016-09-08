@@ -1,0 +1,39 @@
+/// send_create_creature(id, x, y, color, socket)
+/*********************************************************
+ Template for sending information across a network via
+ transmission control protocol (tcp).
+ Inspired by tutorials by HeartBeast.
+ Find more at https://www.youtube.com/user/uheartbeast
+**********************************************************/
+
+var obj_id = argument[0];
+var xx = argument[1];
+var yy = argument[2];
+var color = argument[3];
+var sock = argument[4];
+
+var hue = colour_get_hue(color);
+var sat = colour_get_saturation(color);
+var val = colour_get_value(color);
+
+
+// set up information to send
+var t_buffer = buffer_create(256, buffer_grow, 1);
+buffer_seek(t_buffer, buffer_seek_start, 0);
+buffer_write(t_buffer , buffer_u16, CREATE_CREATURE);
+buffer_write(t_buffer , buffer_u16, obj_id);
+buffer_write(t_buffer , buffer_s16, xx);
+buffer_write(t_buffer , buffer_s16, yy);
+buffer_write(t_buffer , buffer_u8, hue);
+buffer_write(t_buffer , buffer_u8, sat);
+buffer_write(t_buffer , buffer_u8, val);
+
+// send information to all connected devices
+if (sock == ALL_SOCKETS) {
+    for (var i = 0; i < ds_list_size(obj_network.socket_list); i++) {
+        network_send_packet(obj_network.socket_list[| i], t_buffer, buffer_tell(t_buffer));
+    }
+} else {
+    network_send_packet(sock, t_buffer, buffer_tell(t_buffer));
+}
+buffer_delete(t_buffer);
